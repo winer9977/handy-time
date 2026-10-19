@@ -1,0 +1,261 @@
+:root {
+  --xh-bg: rgba(255, 255, 255, 0.78);
+  --xh-bg-solid: #ffffff;
+  --xh-ink: #23262b;
+  --xh-ink-2: #6b7280;
+  --xh-line: rgba(0, 0, 0, 0.08);
+  --xh-accent: #f5c518;
+  --xh-accent-ink: #6b5200;
+  --xh-danger: #e5484d;
+  --xh-ok: #30a46c;
+  --xh-shadow: 0 6px 24px rgba(0, 0, 0, 0.14);
+  --xh-radius: 12px;
+  --xh-font: 13px;
+}
+
+:root[data-theme='dark'] {
+  --xh-bg: rgba(28, 30, 34, 0.82);
+  --xh-bg-solid: #1c1e22;
+  --xh-ink: #e8eaed;
+  --xh-ink-2: #9aa0a6;
+  --xh-line: rgba(255, 255, 255, 0.12);
+  --xh-accent: #f5c518;
+  --xh-accent-ink: #241d00;
+  --xh-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  /* 挂件窗必须全透明，圆角外不画任何东西 */
+  background: transparent;
+  overflow: hidden;
+  font-family: 'Microsoft YaHei UI', 'Microsoft YaHei', 'PingFang SC',
+    'Segoe UI', system-ui, sans-serif;
+  font-size: var(--xh-font);
+  color: var(--xh-ink);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* 挂件根容器：半透明底 + 圆角 + 阴影 */
+.xh-shell {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--xh-bg);
+  border: 1px solid var(--xh-line);
+  border-radius: var(--xh-radius);
+  box-shadow: var(--xh-shadow);
+  backdrop-filter: blur(14px) saturate(1.3);
+  -webkit-backdrop-filter: blur(14px) saturate(1.3);
+  overflow: hidden;
+}
+
+/* 顶部拖拽条：整条都可拖动窗口 */
+.xh-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  flex: none;
+  cursor: grab;
+  border-bottom: 1px solid var(--xh-line);
+  background: linear-gradient(180deg, rgba(245, 197, 24, 0.18), transparent);
+}
+.xh-head:active {
+  cursor: grabbing;
+}
+.xh-title {
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  opacity: 0.85;
+  white-space: nowrap;
+  /* 头部按钮多时（日历：‹今天›月周日 + ⇥✕ 共 8 个）必须让标题先让位。
+     flex item 默认 min-width:auto，nowrap 文本会把最小宽度撑到内容宽、
+     无法收缩 → 溢出时尾部的 ✕ 被 .xh-shell 的 overflow:hidden 裁掉，
+     "点关闭没反应"其实是"根本看不见也点不着"。 */
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 1;
+}
+/* 头部按钮永不让位：让位的是标题，不是 ✕ */
+.xh-head .xh-btn {
+  flex: none;
+}
+.xh-spacer {
+  flex: 1;
+}
+
+.xh-body {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.xh-scroll {
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex: 1;
+  min-height: 0;
+  scrollbar-width: thin;
+}
+.xh-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.xh-scroll::-webkit-scrollbar-thumb {
+  background: rgba(127, 127, 127, 0.35);
+  border-radius: 3px;
+}
+
+button.xh-btn {
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  border: 1px solid var(--xh-line);
+  border-radius: 7px;
+  padding: 2px 7px;
+  cursor: pointer;
+  line-height: 1.5;
+  flex: none;
+}
+button.xh-btn:hover {
+  background: rgba(127, 127, 127, 0.14);
+}
+button.xh-btn.on {
+  background: var(--xh-accent);
+  color: var(--xh-accent-ink);
+  border-color: transparent;
+  font-weight: 700;
+}
+
+.xh-input {
+  font: inherit;
+  color: inherit;
+  background: rgba(127, 127, 127, 0.1);
+  border: 1px solid var(--xh-line);
+  border-radius: 7px;
+  padding: 4px 8px;
+  outline: none;
+  width: 100%;
+}
+.xh-input:focus {
+  border-color: var(--xh-accent);
+  background: rgba(127, 127, 127, 0.16);
+}
+
+/* 标签胶囊 */
+.xh-tag {
+  font-size: 10px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: rgba(76, 141, 255, 0.16);
+  color: #3b7ae0;
+  white-space: nowrap;
+}
+:root[data-theme='dark'] .xh-tag {
+  color: #8ab8ff;
+}
+
+.xh-badge {
+  font-size: 10px;
+  padding: 0 5px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+.xh-badge.over {
+  background: rgba(229, 72, 77, 0.16);
+  color: var(--xh-danger);
+}
+.xh-badge.today {
+  background: var(--xh-accent);
+  color: var(--xh-accent-ink);
+  font-weight: 700;
+}
+.xh-badge.soon {
+  background: rgba(48, 164, 108, 0.16);
+  color: var(--xh-ok);
+}
+.xh-badge.later {
+  background: rgba(127, 127, 127, 0.16);
+  color: var(--xh-ink-2);
+}
+.xh-badge.cd {
+  background: rgba(147, 51, 234, 0.14);
+  color: #9333ea;
+}
+
+.xh-empty {
+  padding: 18px 12px;
+  text-align: center;
+  color: var(--xh-ink-2);
+  font-size: 12px;
+}
+
+/* 幽灵拖拽预览 */
+.xh-ghost {
+  position: fixed;
+  z-index: 9999;
+  pointer-events: none;
+  padding: 3px 9px;
+  border-radius: 7px;
+  background: var(--xh-accent);
+  color: var(--xh-accent-ink);
+  font-weight: 700;
+  font-size: 12px;
+  box-shadow: var(--xh-shadow);
+  transform: translate(-50%, -50%) rotate(-2deg);
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 弹出编辑层 */
+.xh-pop {
+  position: absolute;
+  z-index: 50;
+  right: 6px;
+  top: 30px;
+  width: min(248px, calc(100% - 12px));
+  /* 行数已多到可能超过窗口高度（挂件可以缩到很小）。限高 + 内部滚动，
+     保证底部的改名/删除永远够得着 —— 此前它们被裁到窗口外看不见。 */
+  max-height: calc(100vh - 8px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--xh-bg-solid);
+  border: 1px solid var(--xh-line);
+  border-radius: 10px;
+  box-shadow: var(--xh-shadow);
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.xh-pop .row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  /* 按钮多时（如日程重复的 不重复/每天/每周/每月）必须换行，
+     否则最后一个被弹层 overflow 裁掉，用户点不到 */
+  flex-wrap: wrap;
+}
+.xh-pop .lbl {
+  font-size: 11px;
+  color: var(--xh-ink-2);
+  width: 52px;
+  flex: none;
+}

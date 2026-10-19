@@ -1,0 +1,58 @@
+[package]
+name = "xhy"
+version = "0.1.0"
+description = "xhy · 桌面小黄条 —— 透明桌面待办 / 日历 / 便签插件"
+authors = ["xhy"]
+license = "MIT"
+repository = ""
+edition = "2021"
+rust-version = "1.80"
+
+# 库目标承载全部逻辑，bin 只做入口：便于单元/集成测试直接链接库
+[lib]
+name = "xhy_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = ["tray-icon", "image-png"] }
+tauri-plugin-notification = "2"
+tauri-plugin-global-shortcut = "2"
+tauri-plugin-autostart = "2"
+tauri-plugin-opener = "2"
+tauri-plugin-dialog = "2"
+
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+chrono = { version = "0.4", features = ["serde"] }
+thiserror = "2"
+uuid = { version = "1", features = ["v4", "serde"] }
+parking_lot = "0.12"
+tracing = "0.1"
+# 农历转换（对照 YYNote 的农历显示）。MIT，纯计算无网络
+lunar-lite = "1.3"
+# AI 总结的 HTTP 客户端。**必须关默认 features**：默认 rustls 会拉 aws-lc-rs，
+# 在 Windows 上需要 NASM 才能编译，构建直接崩。native-tls 走系统 schannel。
+ureq = { version = "3", default-features = false, features = ["native-tls", "gzip", "json"] }
+
+[target.'cfg(windows)'.dependencies]
+windows = { version = "0.58", features = [
+  "Win32_Foundation",
+  "Win32_UI_WindowsAndMessaging",
+  "Win32_UI_Input_KeyboardAndMouse",
+  "Win32_System_Threading",
+  "Win32_System_Registry",
+] }
+
+[dev-dependencies]
+tempfile = "3"
+
+[profile.release]
+panic = "abort"
+codegen-units = 1
+lto = true
+opt-level = "s"
+strip = true

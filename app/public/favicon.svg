@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" role="img" aria-label="手边">
+  <!-- 与 app/src-tauri/icons/*.png 同一枚图形：黄底圆角方 + 白色复选框 + 三条清单线。
+       几何按 128x128 位图实测描出（黄底 12..115 / 复选框 19,18 14x14 / 三条线 x27 宽 74 高 9，
+       间距 15），换 logo 时两处一起改。 -->
+  <rect x="12" y="12" width="104" height="104" rx="22" fill="#f5c518" />
+  <rect x="19" y="18" width="14" height="14" rx="4" fill="#fff" />
+  <rect x="27" y="44" width="74" height="9" rx="4.5" fill="#fff" />
+  <rect x="27" y="59" width="74" height="9" rx="4.5" fill="#fff" />
+  <rect x="27" y="74" width="74" height="9" rx="4.5" fill="#fff" />
+</svg>

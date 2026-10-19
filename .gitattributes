@@ -1,0 +1,20 @@
+# 换行归一化：仓库内一律存 LF，签出时按各机的 core.autocrlf 处理。
+# 注意：PowerShell 脚本的 **UTF-8 BOM 属于文件内容**，不受换行归一化影响 ——
+# 5.1 按系统 ANSI(GBK) 解码无 BOM 的中文脚本会直接解析报错，所以 .ps1 必须带 BOM，
+# 这条由 tools/ 下的脚本自己保证，别在提交前用编辑器"去掉 BOM"。
+* text=auto
+
+# 二进制：绝不让 git 改写
+*.png  binary
+*.jpg  binary
+*.ico  binary
+*.icns binary
+*.ttf  binary
+*.woff binary
+*.woff2 binary
+*.exe  binary
+*.zip  binary
+
+# 生成的锁文件不参与 diff 噪音
+app/package-lock.json -diff
+app/src-tauri/Cargo.lock -diff
